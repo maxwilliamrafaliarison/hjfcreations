@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════
+   SYSTÈME DE DESIGN HJF — inspiré du style éditorial Izzy Wheels
+   Base neutre chaude + pops vifs · capitales géométriques + script
+   ════════════════════════════════════════════════════════════ */
+@theme {
+  /* Neutres chauds (base éditoriale) */
+  --color-cream: #faf5ec;
+  --color-ivory: #fffdf8;
+  --color-sand: #f1e8d8;
+  --color-linen: #e4d8c4;
+  --color-taupe: #574d3f;     /* brun chaud profond — bandeaux & pied de page */
+  --color-taupe-soft: #8a7c69;
+  --color-tan: #a69376;
+  --color-ink: #241c17;
+
+  /* Marque chaude */
+  --color-gold: #c6a14b;
+  --color-gold-dark: #a07f2f;
+  --color-terracotta: #c1694f;
+  --color-terracotta-dark: #9f5239;
+
+  /* Pops vifs (motifs & accents, façon Izzy) */
+  --color-rose: #e0457b;
+  --color-red: #e23b3b;
+  --color-teal: #23c2c2;
+  --color-orange: #f39237;
+  --color-sky: #3aa0e3;
+
+  --color-whatsapp: #25d366;
+  --color-whatsapp-dark: #128c7e;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Polices injectées par next/font (voir layout.tsx) */
+@theme inline {
+  --font-sans: var(--font-jost);
+  --font-display: var(--font-jost);
+  --font-script: var(--font-sacramento);
+}
+
+/* ════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════ */
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-jost), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-jost), sans-serif;
+  font-weight: 800;
+  line-height: 1.04;
+}
+
+::selection { background: var(--color-terracotta); color: #fff; }
+
+/* Mot-accent en script (écho au logo « Créations ») */
+.script {
+  font-family: var(--font-sacramento), cursive;
+  font-weight: 400;
+  text-transform: none;
+  line-height: 0.9;
+}
+
+/* Sur-titre tracké */
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOUTONS ÉDITORIAUX (capitales très trackées)
+   ════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2rem;
+  font-family: var(--font-jost), sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.btn--line { background: transparent; border-color: currentColor; }
+.btn--line:hover { background: var(--color-ink); color: #fff; border-color: var(--color-ink); }
+.btn--solid { background: var(--color-ink); color: var(--color-cream); }
+.btn--solid:hover { background: #000; transform: translateY(-2px); }
+.btn--terracotta { background: var(--color-terracotta); color: #fff; }
+.btn--terracotta:hover { background: var(--color-terracotta-dark); transform: translateY(-2px); }
+.btn--gold { background: var(--color-gold); color: #fff; }
+.btn--gold:hover { background: var(--color-gold-dark); transform: translateY(-2px); }
+.btn--wa { background: var(--color-whatsapp); color: #fff; }
+.btn--wa:hover { background: var(--color-whatsapp-dark); transform: translateY(-2px); }
+.btn--light { background: var(--color-cream); color: var(--color-ink); }
+.btn--light:hover { background: #fff; transform: translateY(-2px); }
+
+/* Ancien biseau neutralisé -> rectangles nets, partout */
+.clip-corner { border-radius: 0 !important; clip-path: none !important; }
+
+/* Lien souligné animé */
+.link-underline { position: relative; }
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 0;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+.link-underline:hover::after { width: 100%; }
