@@ -38,7 +38,7 @@ export const site = {
   },
 
   /* Adresse finale du site — à mettre à jour si vous ajoutez un domaine perso */
-  url: "https://hjfcreations-hgnj.vercel.app",
+  url: "https://hjfcreations.vercel.app",
 } as const;
 
 export type Site = typeof site;
