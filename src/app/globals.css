@@ -91,6 +91,7 @@ h1, h2, h3, h4 {
 /* ════════════════════════════════════════════════════════════
    BOUTONS ÉDITORIAUX (capitales très trackées)
    ════════════════════════════════════════════════════════════ */
+@layer components {
 .btn {
   display: inline-flex;
   align-items: center;
@@ -119,6 +120,7 @@ h1, h2, h3, h4 {
 .btn--wa:hover { background: var(--color-whatsapp-dark); transform: translateY(-2px); }
 .btn--light { background: var(--color-cream); color: var(--color-ink); }
 .btn--light:hover { background: #fff; transform: translateY(-2px); }
+}
 
 /* Ancien biseau neutralisé -> rectangles nets, partout */
 .clip-corner { border-radius: 0 !important; clip-path: none !important; }
