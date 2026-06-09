@@ -1,20 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/data/site";
-import { produits } from "@/data/produits";
+import { produits, getByTag } from "@/data/produits";
 import ProductCard from "@/components/ProductCard";
 import Marquee from "@/components/Marquee";
 import MemphisPattern from "@/components/MemphisPattern";
+import Testimonials from "@/components/Testimonials";
 import { devisWhatsappLink, contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, ArrowRightIcon, MailIcon, SparkleIcon } from "@/components/icons";
 
 const populaires = produits.filter((p) => p.populaire).slice(0, 4);
+const scolaires = getByTag("scolaire").slice(0, 4);
 
 const collections = [
-  { id: "textile", label: "Textile", emoji: "👕", color: "bg-terracotta" },
-  { id: "ceramique", label: "Céramique", emoji: "☕", color: "bg-gold" },
-  { id: "plastique", label: "Plastique", emoji: "🥤", color: "bg-teal" },
-  { id: "cadeau", label: "Cadeaux", emoji: "🎁", color: "bg-rose" },
+  { id: "textile", label: "Textile", image: "/produits/coll-textile.jpg" },
+  { id: "ceramique", label: "Céramique", image: "/produits/coll-ceramique.jpg" },
+  { id: "plastique", label: "Plastique", image: "/produits/coll-plastique.jpg" },
+  { id: "cadeau", label: "Cadeaux", image: "/produits/coll-cadeau.jpg" },
 ];
 
 const matieres = [
@@ -28,13 +30,6 @@ const etapes = [
   { num: "1", titre: "Choisissez", texte: "Parcourez la boutique et sélectionnez votre création." },
   { num: "2", titre: "Personnalisez", texte: "Envoyez votre texte et vos photos sur WhatsApp." },
   { num: "3", titre: "Recevez", texte: "Payez par Mobile Money ou à la livraison, puis on vous livre." },
-];
-
-// ⭐ Témoignages d'exemple — à remplacer par de vrais avis clients.
-const temoignages = [
-  { texte: "Le mug avec la photo de ma maman était parfait. Qualité au top et livré rapidement à Tana !", auteur: "Mirana R." },
-  { texte: "J'ai commandé des t-shirts pour toute la famille. Couleurs éclatantes, travail soigné. Je recommande !", auteur: "Tojo A." },
-  { texte: "Service à l'écoute et créations vraiment uniques. Mon cadeau a fait sensation.", auteur: "Hanta N." },
 ];
 
 export default function Home() {
@@ -117,10 +112,8 @@ export default function Home() {
         <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4">
           {collections.map((c) => (
             <Link key={c.id} href="/boutique" className="group flex flex-col items-center gap-4">
-              <span
-                className={`flex h-28 w-28 items-center justify-center rounded-full text-4xl shadow-lg ring-4 ring-white transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32 ${c.color}`}
-              >
-                {c.emoji}
+              <span className="relative h-28 w-28 overflow-hidden rounded-full shadow-lg ring-4 ring-white transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32">
+                <Image src={c.image} alt={c.label} fill sizes="128px" className="object-cover" />
               </span>
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-ink group-hover:text-terracotta">
                 {c.label}
@@ -186,6 +179,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════ SPÉCIAL COLLÈGE & LYCÉE ═══════════ */}
+      <section className="bg-cream">
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow text-gold-dark">Spécial rentrée</p>
+              <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-5xl">
+                Collège &amp; Lycée
+              </h2>
+              <p className="mt-3 max-w-xl text-taupe">
+                À deux pas du Lycée Français de Tananarive : gourdes, trousses,
+                carnets et casquettes au prénom de votre enfant — plus rien ne se
+                perd, et tout a du style.
+              </p>
+            </div>
+            <Link href="/boutique" className="btn btn--line text-ink">
+              Voir tout
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
+            {scolaires.map((p) => (
+              <ProductCard key={p.slug} produit={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ SAVOIR-FAIRE ═══════════ */}
       <section className="bg-ink text-cream">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
@@ -244,16 +265,8 @@ export default function Home() {
               Vos plus beaux moments
             </h2>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {temoignages.map((t) => (
-              <figure key={t.auteur} className="flex flex-col bg-ivory p-7 ring-1 ring-linen">
-                <span className="font-script text-5xl leading-none text-terracotta">“</span>
-                <blockquote className="-mt-3 leading-relaxed text-ink">{t.texte}</blockquote>
-                <figcaption className="mt-4 text-sm font-bold uppercase tracking-[0.15em] text-gold-dark">
-                  {t.auteur}
-                </figcaption>
-              </figure>
-            ))}
+          <div className="mt-12">
+            <Testimonials />
           </div>
         </div>
       </section>
