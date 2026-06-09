@@ -37,8 +37,8 @@ export const site = {
     tiktok: "", // ex : "https://tiktok.com/@hjfcreations"
   },
 
-  /* Adresse finale du site — à mettre à jour après le déploiement sur Vercel */
-  url: "https://hjfcreations.vercel.app",
+  /* Adresse finale du site — à mettre à jour si vous ajoutez un domaine perso */
+  url: "https://hjfcreations-hgnj.vercel.app",
 } as const;
 
 export type Site = typeof site;
