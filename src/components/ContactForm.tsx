@@ -60,7 +60,7 @@ export default function ContactForm() {
   const inputClass =
     "w-full border border-linen bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta";
   const labelClass =
-    "mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink-soft";
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-soft";
 
   return (
     <form onSubmit={envoyerWhatsApp} className="space-y-4">

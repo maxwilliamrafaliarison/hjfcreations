@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { produits, CATEGORIES, type Categorie } from "@/data/produits";
+import { useRouter, useSearchParams } from "next/navigation";
+import { CATEGORIES, type Categorie, type Produit } from "@/data/produits";
 import ProductCard from "@/components/ProductCard";
 
 type Filter = "tous" | Categorie;
@@ -11,27 +11,41 @@ const FILTERS: { id: Filter; label: string }[] = [
   ...CATEGORIES,
 ];
 
-export default function BoutiqueGrid() {
-  const [filter, setFilter] = useState<Filter>("tous");
+const CATEGORIES_VALIDES = new Set<string>(CATEGORIES.map((c) => c.id));
+
+/** Grille filtrable — le filtre vit dans l'URL (?cat=…) pour être partageable. */
+export default function BoutiqueGrid({ produits }: { produits: Produit[] }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const cat = searchParams.get("cat");
+  const filter: Filter =
+    cat && CATEGORIES_VALIDES.has(cat) ? (cat as Categorie) : "tous";
+
   const liste =
     filter === "tous" ? produits : produits.filter((p) => p.categorie === filter);
+
+  function setFilter(f: Filter) {
+    router.replace(f === "tous" ? "/boutique" : `/boutique?cat=${f}`, {
+      scroll: false,
+    });
+  }
 
   return (
     <div>
       {/* Filtres */}
       <div className="mb-8 flex flex-wrap items-center gap-2.5">
-        <span className="mr-1 text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">
-          Filtrer :
-        </span>
+        <span className="eyebrow mr-1 text-ink-soft">Filtrer :</span>
         {FILTERS.map((f) => (
           <button
             key={f.id}
             type="button"
+            aria-pressed={filter === f.id}
             onClick={() => setFilter(f.id)}
-            className={`border px-4 py-2 text-xs font-medium uppercase tracking-wider transition-colors ${
+            className={`border px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
               filter === f.id
                 ? "border-terracotta bg-terracotta text-white"
-                : "border-linen text-ink-soft hover:border-terracotta hover:text-terracotta"
+                : "border-linen text-taupe hover:border-terracotta hover:text-terracotta"
             }`}
           >
             {f.label}
@@ -46,7 +60,7 @@ export default function BoutiqueGrid() {
         ))}
       </div>
 
-      <p className="mt-8 text-sm text-ink-soft">
+      <p className="mt-8 text-sm text-taupe">
         {liste.length} création{liste.length > 1 ? "s" : ""}
         {filter !== "tous" ? " dans cette catégorie" : ""}.
       </p>

@@ -9,6 +9,8 @@
    - tags      : ["scolaire"] pour la sélection Collège & Lycée (optionnel)
    ════════════════════════════════════════════════════════════════════════ */
 
+import { formatAr } from "../lib/format";
+
 export type Categorie = "textile" | "ceramique" | "plastique" | "cadeau";
 
 export interface Produit {
@@ -263,5 +265,5 @@ export function getByTag(tag: string): Produit[] {
 /** Libellé de prix affichable, ex : "20 000 Ar" ou "Sur devis". */
 export function prixLabel(p: Produit): string {
   if (p.prix === null) return "Sur devis";
-  return `${new Intl.NumberFormat("fr-FR").format(p.prix)} Ar`;
+  return formatAr(p.prix);
 }

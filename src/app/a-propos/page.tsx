@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "À propos",
   description:
     "HJF Créations, l'artisanat de la sublimation à Antananarivo : des objets personnalisés faits avec passion, offerts avec amour.",
+  alternates: { canonical: "/a-propos" },
 };
 
 const valeurs = [

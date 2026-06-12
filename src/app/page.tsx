@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/data/site";
@@ -8,6 +9,10 @@ import MemphisPattern from "@/components/MemphisPattern";
 import Testimonials from "@/components/Testimonials";
 import { devisWhatsappLink, contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, ArrowRightIcon, MailIcon, SparkleIcon } from "@/components/icons";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const populaires = produits.filter((p) => p.populaire).slice(0, 4);
 const scolaires = getByTag("scolaire").slice(0, 4);
@@ -111,7 +116,7 @@ export default function Home() {
         </h2>
         <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4">
           {collections.map((c) => (
-            <Link key={c.id} href="/boutique" className="group flex flex-col items-center gap-4">
+            <Link key={c.id} href={`/boutique?cat=${c.id}`} className="group flex flex-col items-center gap-4">
               <span className="relative h-28 w-28 overflow-hidden rounded-full shadow-lg ring-4 ring-white transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32">
                 <Image src={c.image} alt={c.label} fill sizes="128px" className="object-cover" />
               </span>

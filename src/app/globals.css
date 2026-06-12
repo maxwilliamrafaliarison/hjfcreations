@@ -11,13 +11,14 @@
   --color-sand: #f1e8d8;
   --color-linen: #e4d8c4;
   --color-taupe: #574d3f;     /* brun chaud profond — bandeaux & pied de page */
-  --color-taupe-soft: #8a7c69;
+  --color-taupe-soft: #6e6253; /* texte secondaire — contraste AA sur crème */
   --color-tan: #a69376;
   --color-ink: #241c17;
+  --color-ink-soft: #635649;  /* texte secondaire chaud — contraste AA sur crème */
 
   /* Marque chaude */
   --color-gold: #c6a14b;
-  --color-gold-dark: #a07f2f;
+  --color-gold-dark: #8a6c24; /* assombri pour rester lisible en petites capitales */
   --color-terracotta: #c1694f;
   --color-terracotta-dark: #9f5239;
 
@@ -71,6 +72,13 @@ h1, h2, h3, h4 {
 }
 
 ::selection { background: var(--color-terracotta); color: #fff; }
+
+/* Navigation clavier : focus bien visible sur fond crème */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
 
 /* Mot-accent en script (écho au logo « Créations ») */
 .script {

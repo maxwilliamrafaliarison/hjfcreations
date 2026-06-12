@@ -8,7 +8,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const jost = Jost({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
   variable: "--font-jost",
   display: "swap",
 });
@@ -43,15 +43,12 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.metier}`,
     description: site.description,
     url: site.url,
-    images: [{ url: "/campagne-fete-des-meres.jpg", width: 512, height: 768, alt: site.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} — ${site.metier}`,
     description: site.description,
-    images: ["/campagne-fete-des-meres.jpg"],
   },
-  alternates: { canonical: "/" },
 };
 
 const jsonLd = {
@@ -82,8 +79,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <a
+          href="#contenu"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-ink focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-cream"
+        >
+          Aller au contenu
+        </a>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="contenu" className="flex-1">{children}</main>
         <Footer />
         <WhatsAppFloat />
       </body>

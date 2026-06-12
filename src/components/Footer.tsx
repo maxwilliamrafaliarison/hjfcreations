@@ -81,14 +81,17 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:px-8 md:grid-cols-2 lg:grid-cols-4">
         <FooterCol title="Boutique">
           <li><Link href="/boutique" className="transition-colors hover:text-gold">Tous les produits</Link></li>
-          <li><Link href="/boutique" className="transition-colors hover:text-gold">Textile & céramique</Link></li>
-          <li><Link href="/boutique" className="transition-colors hover:text-gold">Cadeaux personnalisés</Link></li>
+          <li><Link href="/boutique?cat=textile" className="transition-colors hover:text-gold">Textile</Link></li>
+          <li><Link href="/boutique?cat=ceramique" className="transition-colors hover:text-gold">Céramique</Link></li>
+          <li><Link href="/boutique?cat=plastique" className="transition-colors hover:text-gold">Plastique</Link></li>
+          <li><Link href="/boutique?cat=cadeau" className="transition-colors hover:text-gold">Cadeaux personnalisés</Link></li>
         </FooterCol>
 
         <FooterCol title="La maison">
           <li><Link href="/" className="transition-colors hover:text-gold">Accueil</Link></li>
           <li><Link href="/a-propos" className="transition-colors hover:text-gold">Notre histoire</Link></li>
           <li><Link href="/contact" className="transition-colors hover:text-gold">Contact</Link></li>
+          <li><Link href="/contact#faq" className="transition-colors hover:text-gold">Questions fréquentes</Link></li>
         </FooterCol>
 
         <FooterCol title="Contact">

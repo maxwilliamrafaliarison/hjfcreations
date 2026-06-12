@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: produit.nom,
     description: produit.description,
+    alternates: { canonical: `/boutique/${produit.slug}` },
     openGraph: {
       title: `${produit.nom} · ${site.name}`,
       description: produit.description,
@@ -44,8 +45,50 @@ export default async function ProduitPage({ params }: Params) {
     .filter((p) => p.categorie === produit.categorie && p.slug !== produit.slug)
     .slice(0, 4);
 
+  const imageUrl = produit.image
+    ? produit.image.startsWith("http")
+      ? produit.image
+      : `${site.url}${produit.image}`
+    : `${site.url}/logo.jpg`;
+
+  const produitJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: produit.nom,
+    description: produit.description,
+    image: imageUrl,
+    brand: { "@type": "Brand", name: site.name },
+    ...(produit.prix !== null && {
+      offers: {
+        "@type": "Offer",
+        price: produit.prix,
+        priceCurrency: "MGA",
+        availability: "https://schema.org/InStock",
+        url: `${site.url}/boutique/${produit.slug}`,
+      },
+    }),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Accueil", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Boutique", item: `${site.url}/boutique` },
+      { "@type": "ListItem", position: 3, name: produit.nom },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(produitJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* Fil d'Ariane */}
       <div className="border-b border-linen bg-ivory">
         <nav className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-4 text-xs uppercase tracking-wider text-ink-soft sm:px-8">
@@ -72,7 +115,7 @@ export default async function ProduitPage({ params }: Params) {
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-sand to-linen text-ink-soft/70">
               <ImageIcon className="h-14 w-14 text-gold/60" />
-              <span className="text-xs font-medium uppercase tracking-[0.2em]">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em]">
                 Photo bientôt disponible
               </span>
             </div>
@@ -108,7 +151,7 @@ export default async function ProduitPage({ params }: Params) {
           </div>
 
           <div className="mt-6 border-l-2 border-gold bg-ivory p-5 text-sm leading-relaxed text-ink-soft">
-            <p className="font-medium text-ink">Comment ça marche&nbsp;?</p>
+            <p className="font-semibold text-ink">Comment ça marche&nbsp;?</p>
             <p className="mt-1.5">
               Cliquez sur « Commander sur WhatsApp », envoyez-nous votre texte et
               vos photos, et nous validons ensemble la personnalisation. Paiement

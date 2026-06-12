@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { produits } from "@/data/produits";
 import PageHeader from "@/components/PageHeader";
 import BoutiqueGrid from "@/components/BoutiqueGrid";
 
@@ -6,6 +8,7 @@ export const metadata: Metadata = {
   title: "Boutique",
   description:
     "Découvrez nos créations personnalisées : mugs, t-shirts, coussins, gourdes et cadeaux uniques par sublimation, à Antananarivo.",
+  alternates: { canonical: "/boutique" },
 };
 
 export default function BoutiquePage() {
@@ -17,7 +20,9 @@ export default function BoutiquePage() {
       </PageHeader>
 
       <section className="mx-auto max-w-7xl px-6 py-12 sm:px-8 md:py-16">
-        <BoutiqueGrid />
+        <Suspense>
+          <BoutiqueGrid produits={produits} />
+        </Suspense>
       </section>
     </>
   );

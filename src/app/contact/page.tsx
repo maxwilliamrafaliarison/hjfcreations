@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { site } from "@/data/site";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
+import Faq from "@/components/Faq";
 import { contactWhatsappLink } from "@/lib/whatsapp";
 import {
   WhatsAppIcon,
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Contactez HJF Créations à Antananarivo par WhatsApp ou email pour vos commandes et cadeaux personnalisés. Paiement Mobile Money ou à la livraison.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
@@ -69,7 +71,7 @@ export default function ContactPage() {
             </p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {site.payments.map((p) => (
-                <span key={p} className="bg-sand px-3 py-1.5 text-xs font-medium text-ink">
+                <span key={p} className="bg-sand px-3 py-1.5 text-xs font-semibold text-ink">
                   {p}
                 </span>
               ))}
@@ -99,6 +101,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      <Faq />
     </>
   );
 }
