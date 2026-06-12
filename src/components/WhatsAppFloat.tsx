@@ -1,10 +1,11 @@
+import type { SiteData } from "@/data/site";
 import { contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/icons";
 
-export default function WhatsAppFloat() {
+export default function WhatsAppFloat({ site }: { site: SiteData }) {
   return (
     <a
-      href={contactWhatsappLink()}
+      href={contactWhatsappLink(site)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Nous contacter sur WhatsApp"

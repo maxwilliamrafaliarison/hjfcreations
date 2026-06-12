@@ -2,26 +2,25 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import {
-  produits,
-  getProduit,
-  prixLabel,
-  CATEGORIES,
-} from "@/data/produits";
-import { site } from "@/data/site";
+import { prixLabel, CATEGORIES } from "@/data/produits";
+import { getProduit, getProduits, getSite } from "@/lib/content";
 import OrderButtons from "@/components/OrderButtons";
 import ProductCard from "@/components/ProductCard";
 import { CheckIcon, ImageIcon } from "@/components/icons";
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
+// Les produits ajoutés depuis l'admin après le build restent accessibles.
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const produits = await getProduits();
   return produits.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const produit = getProduit(slug);
+  const [produit, site] = await Promise.all([getProduit(slug), getSite()]);
   if (!produit) return { title: "Produit introuvable" };
   return {
     title: produit.nom,
@@ -37,7 +36,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ProduitPage({ params }: Params) {
   const { slug } = await params;
-  const produit = getProduit(slug);
+  const [produit, produits, site] = await Promise.all([
+    getProduit(slug),
+    getProduits(),
+    getSite(),
+  ]);
   if (!produit) notFound();
 
   const categorie = CATEGORIES.find((c) => c.id === produit.categorie)?.label;
@@ -113,15 +116,13 @@ export default async function ProduitPage({ params }: Params) {
               priority
             />
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-sand to-linen text-ink-soft/70">
-              <ImageIcon className="h-14 w-14 text-gold/60" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em]">
-                Photo bientôt disponible
-              </span>
+            <div className="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-sand to-linen text-taupe-soft">
+              <ImageIcon className="h-14 w-14 text-gold/70" />
+              <span className="eyebrow">Photo bientôt disponible</span>
             </div>
           )}
           {produit.badge && (
-            <span className="absolute left-4 top-4 bg-terracotta px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow">
+            <span className="absolute left-4 top-4 bg-terracotta px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow">
               {produit.badge}
             </span>
           )}
@@ -129,11 +130,15 @@ export default async function ProduitPage({ params }: Params) {
 
         {/* Détails */}
         <div className="flex flex-col">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-terracotta">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-terracotta">
             {categorie}
           </p>
-          <h1 className="mt-2 font-display text-4xl text-ink">{produit.nom}</h1>
-          <p className="mt-3 font-display text-2xl text-gold-dark">{prixLabel(produit)}</p>
+          <h1 className="mt-2 text-4xl font-extrabold uppercase tracking-tight text-ink">
+            {produit.nom}
+          </h1>
+          <p className="mt-3 text-2xl font-extrabold uppercase tracking-wide text-gold-dark">
+            {prixLabel(produit)}
+          </p>
 
           <p className="mt-5 leading-relaxed text-ink-soft">{produit.description}</p>
 
@@ -147,7 +152,7 @@ export default async function ProduitPage({ params }: Params) {
           </ul>
 
           <div className="mt-8">
-            <OrderButtons produit={produit} />
+            <OrderButtons produit={produit} site={site} />
           </div>
 
           <div className="mt-6 border-l-2 border-gold bg-ivory p-5 text-sm leading-relaxed text-ink-soft">
@@ -166,7 +171,7 @@ export default async function ProduitPage({ params }: Params) {
       {related.length > 0 && (
         <section className="border-t border-linen bg-sand">
           <div className="mx-auto max-w-7xl px-6 py-14 sm:px-8">
-            <h2 className="font-display text-2xl text-ink sm:text-3xl">
+            <h2 className="text-2xl font-extrabold uppercase tracking-tight text-ink sm:text-3xl">
               Dans la même catégorie
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">

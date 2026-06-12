@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "@/data/site";
+import { getSite } from "@/lib/content";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import Faq from "@/components/Faq";
@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = await getSite();
+
   const coordonnees = [
     { Icon: MailIcon, label: "Email", value: site.email, href: `mailto:${site.email}` },
     { Icon: PhoneIcon, label: "Téléphone / WhatsApp", value: site.phoneDisplay, href: `tel:+${site.phoneNumber}` },
@@ -41,7 +43,9 @@ export default function ContactPage() {
       <section className="mx-auto grid max-w-7xl gap-12 px-6 py-14 sm:px-8 md:grid-cols-[0.9fr_1.1fr] md:py-16">
         {/* Coordonnées */}
         <div>
-          <h2 className="font-display text-2xl text-ink">Nous sommes là pour vous</h2>
+          <h2 className="text-2xl font-extrabold uppercase tracking-tight text-ink">
+            Nous sommes là pour vous
+          </h2>
           <p className="mt-2 text-ink-soft">
             Écrivez-nous directement, nous répondons avec plaisir.
           </p>
@@ -80,10 +84,10 @@ export default function ContactPage() {
 
           {/* Gros bouton WhatsApp */}
           <a
-            href={contactWhatsappLink()}
+            href={contactWhatsappLink(site)}
             target="_blank"
             rel="noopener noreferrer"
-            className="clip-corner mt-6 flex items-center justify-center gap-2.5 bg-whatsapp px-6 py-4 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-whatsapp-dark"
+            className="btn btn--wa mt-6 w-full"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Discuter sur WhatsApp
@@ -92,12 +96,14 @@ export default function ContactPage() {
 
         {/* Formulaire */}
         <div className="bg-ivory p-6 shadow-sm ring-1 ring-linen sm:p-8">
-          <h2 className="font-display text-2xl text-ink">Envoyez-nous un message</h2>
+          <h2 className="text-2xl font-extrabold uppercase tracking-tight text-ink">
+            Envoyez-nous un message
+          </h2>
           <p className="mt-1.5 text-sm text-ink-soft">
             Les champs marqués d'un * sont obligatoires.
           </p>
           <div className="mt-6">
-            <ContactForm />
+            <ContactForm site={site} />
           </div>
         </div>
       </section>

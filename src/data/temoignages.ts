@@ -5,9 +5,11 @@
    ════════════════════════════════════════════════════════════════════════ */
 
 export interface Temoignage {
+  id?: string; // identifiant en base (absent pour le contenu statique)
   texte: string;
   auteur: string;
   contexte: string;
+  visible?: boolean;
 }
 
 export const temoignages: Temoignage[] = [

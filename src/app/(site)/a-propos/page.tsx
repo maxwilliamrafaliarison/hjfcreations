@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { site } from "@/data/site";
+import { getSite } from "@/lib/content";
 import PageHeader from "@/components/PageHeader";
 import { contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, SparkleIcon } from "@/components/icons";
@@ -19,7 +19,9 @@ const valeurs = [
   { titre: "Proximité", texte: "Un service à l'écoute, à Antananarivo et partout à Madagascar." },
 ];
 
-export default function AProposPage() {
+export default async function AProposPage() {
+  const site = await getSite();
+
   return (
     <>
       <PageHeader
@@ -33,9 +35,7 @@ export default function AProposPage() {
       {/* Histoire */}
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:px-8 md:grid-cols-2 md:py-20">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-dark">
-            HJF Créations
-          </p>
+          <p className="eyebrow text-gold-dark">{site.name}</p>
           <h2 className="mt-3 text-3xl font-extrabold uppercase leading-tight tracking-tight text-ink sm:text-4xl">
             Un savoir-faire artisanal au cœur de chaque création
           </h2>
@@ -73,16 +73,16 @@ export default function AProposPage() {
       <section className="bg-sand">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-dark">
-              Ce qui nous guide
-            </p>
-            <h2 className="mt-2 font-display text-3xl text-ink sm:text-4xl">Nos valeurs</h2>
+            <p className="eyebrow text-gold-dark">Ce qui nous guide</p>
+            <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-4xl">
+              Nos valeurs
+            </h2>
           </div>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {valeurs.map((v) => (
               <div key={v.titre} className="border-l-2 border-gold bg-ivory p-6">
                 <SparkleIcon className="h-6 w-6 text-gold" />
-                <h3 className="mt-3 font-display text-xl text-ink">{v.titre}</h3>
+                <h3 className="mt-3 text-xl font-extrabold uppercase tracking-tight text-ink">{v.titre}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{v.texte}</p>
               </div>
             ))}
@@ -100,10 +100,10 @@ export default function AProposPage() {
             Écrivez-nous sur WhatsApp, nous vous répondons rapidement.
           </p>
           <a
-            href={contactWhatsappLink()}
+            href={contactWhatsappLink(site)}
             target="_blank"
             rel="noopener noreferrer"
-            className="clip-corner mt-8 inline-flex items-center gap-2 bg-whatsapp px-7 py-3.5 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-whatsapp-dark"
+            className="btn btn--wa mt-8"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Discuter de mon projet

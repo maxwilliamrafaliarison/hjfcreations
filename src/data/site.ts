@@ -1,44 +1,74 @@
 /* ════════════════════════════════════════════════════════════════════════
-   ⭐ CONFIGURATION DU SITE — modifiez UNIQUEMENT ce fichier pour mettre à
-   jour vos coordonnées. Tout le site (en-tête, pied de page, boutons
-   WhatsApp, contact…) lit ces valeurs automatiquement.
+   ⭐ CONFIGURATION DU SITE — valeurs par défaut.
+   Une fois l'administration en place (/admin/contact), ces informations
+   sont modifiables en ligne et stockées en base : ce fichier sert alors de
+   contenu de secours (et de valeurs initiales pour le seed).
    ════════════════════════════════════════════════════════════════════════ */
 
-export const site = {
+export interface SiteData {
   /* Identité */
+  name: string;
+  slogan: string;
+  metier: string;
+  description: string;
+
+  /* Localisation */
+  city: string;
+  region: string;
+  delivery: string;
+
+  /* Contact */
+  email: string;
+  phoneDisplay: string; // affiché à l'écran
+  phoneNumber: string; // pour les liens tel: (sans + ni espaces)
+  whatsappNumber: string; // pour les liens wa.me (sans + ni espaces)
+
+  /* Infos pratiques */
+  hours: string;
+  responseTime: string;
+
+  /* Moyens de paiement acceptés */
+  payments: string[];
+
+  /* Réseaux sociaux — "" = masqué */
+  social: {
+    facebook: string;
+    instagram: string;
+    tiktok: string;
+  };
+
+  /* Adresse du site (SEO) */
+  url: string;
+}
+
+export const site: SiteData = {
   name: "HJF Créations",
   slogan: "Créé avec passion, offert avec amour",
   metier: "Sublimation sur coton, céramique & plastique",
   description:
     "HJF Créations réalise vos objets personnalisés par sublimation à Antananarivo : mugs, t-shirts, coussins et cadeaux uniques avec votre texte et vos photos. Créé avec passion, offert avec amour.",
 
-  /* Localisation */
   city: "Antananarivo",
   region: "Madagascar",
   delivery: "Livraison à Antananarivo et en province",
 
-  /* Contact */
   email: "hjcreation101@gmail.com",
-  phoneDisplay: "+261 32 95 275 96", // affiché à l'écran
-  phoneNumber: "261329527596", // utilisé pour les liens tel:
-  whatsappNumber: "261329527596", // utilisé pour les liens wa.me (sans + ni espaces)
+  phoneDisplay: "+261 32 95 275 96",
+  phoneNumber: "261329527596",
+  whatsappNumber: "261329527596",
 
-  /* Infos pratiques */
   hours: "Lundi – Samedi : 8h – 18h",
   responseTime: "Réponse rapide sur WhatsApp",
 
-  /* Moyens de paiement acceptés (affichés sur la page Contact) */
   payments: ["MVola", "Orange Money", "Airtel Money", "Paiement à la livraison"],
 
-  /* Réseaux sociaux — laissez "" si vous n'en avez pas (le lien sera masqué) */
   social: {
-    facebook: "", // ex : "https://facebook.com/hjfcreations"
-    instagram: "", // ex : "https://instagram.com/hjfcreations"
-    tiktok: "", // ex : "https://tiktok.com/@hjfcreations"
+    facebook: "",
+    instagram: "",
+    tiktok: "",
   },
 
-  /* Adresse finale du site — à mettre à jour si vous ajoutez un domaine perso */
   url: "https://hjfcreations.vercel.app",
-} as const;
+};
 
-export type Site = typeof site;
+export type Site = SiteData;

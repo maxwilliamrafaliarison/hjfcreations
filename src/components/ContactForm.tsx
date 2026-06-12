@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { site } from "@/data/site";
+import type { SiteData } from "@/data/site";
 import { whatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, MailIcon } from "@/components/icons";
 
@@ -16,7 +16,7 @@ const SUJETS = [
 
 const champVide = { prenom: "", nom: "", email: "", tel: "", sujet: "", message: "" };
 
-export default function ContactForm() {
+export default function ContactForm({ site }: { site: SiteData }) {
   const [f, setF] = useState(champVide);
   const [erreur, setErreur] = useState("");
 
@@ -47,7 +47,11 @@ export default function ContactForm() {
   function envoyerWhatsApp(e: FormEvent) {
     e.preventDefault();
     if (!valide()) return;
-    window.open(whatsappLink(composeMessage()), "_blank", "noopener,noreferrer");
+    window.open(
+      whatsappLink(site.whatsappNumber, composeMessage()),
+      "_blank",
+      "noopener,noreferrer",
+    );
   }
 
   function envoyerEmail() {
@@ -104,18 +108,11 @@ export default function ContactForm() {
       {erreur && <p className="text-sm text-rose">{erreur}</p>}
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <button
-          type="submit"
-          className="clip-corner inline-flex flex-1 items-center justify-center gap-2.5 bg-whatsapp px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-whatsapp-dark"
-        >
+        <button type="submit" className="btn btn--wa flex-1">
           <WhatsAppIcon className="h-5 w-5" />
           Envoyer sur WhatsApp
         </button>
-        <button
-          type="button"
-          onClick={envoyerEmail}
-          className="clip-corner inline-flex flex-1 items-center justify-center gap-2.5 border border-ink/20 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-ink transition-colors hover:bg-ink hover:text-cream"
-        >
+        <button type="button" onClick={envoyerEmail} className="btn btn--line flex-1 text-ink">
           <MailIcon className="h-5 w-5" />
           Envoyer par email
         </button>

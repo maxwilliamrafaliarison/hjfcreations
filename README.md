@@ -1,133 +1,125 @@
-# HJF Créations — Site vitrine & catalogue
+# HJF Créations — Site vitrine, catalogue & administration
 
 Site web de **HJF Créations** : sublimation personnalisée (coton, céramique, plastique) à Antananarivo.
-Catalogue moderne avec commande directe par **WhatsApp** et **email**.
+Catalogue moderne avec commande directe par **WhatsApp** et **email**, et **espace d'administration**
+pour modifier le contenu sans toucher au code.
 
 > *« Créé avec passion, offert avec amour. »*
 
-Construit avec **Next.js 16**, **React 19**, **TypeScript** et **Tailwind CSS v4**.
+Construit avec **Next.js 16**, **React 19**, **TypeScript**, **Tailwind CSS v4** et **Supabase**
+(base de données + authentification + stockage des photos).
 
 ---
 
-## 🗂️ Aperçu des pages
+## 🗂️ Pages
 
 | Page | Adresse | Contenu |
 |------|---------|---------|
-| Accueil | `/` | Présentation, produits phares, étapes de commande |
-| Boutique | `/boutique` | Catalogue filtrable (Textile, Céramique, Plastique, Cadeaux) |
-| Fiche produit | `/boutique/<produit>` | Détails + boutons « Commander sur WhatsApp / email » |
+| Accueil | `/` | Hero, collections, produits phares, événement/promo, Collège & Lycée, avis |
+| Boutique | `/boutique` | Catalogue filtrable par l'URL (`?cat=textile…`) |
+| Fiche produit | `/boutique/<produit>` | Détails, JSON-LD Product, commande WhatsApp/email |
 | À propos | `/a-propos` | Histoire et valeurs |
-| Contact | `/contact` | Coordonnées, Mobile Money, formulaire |
+| Contact | `/contact` | Coordonnées, formulaire, FAQ achat |
+| **Administration** | `/admin` | **Réservé aux admins** — contact, produits, tarifs, photos, avis, événements |
 
----
+## 🔐 Administration
+
+- Accès : `https://votre-site/admin` — connexion par **email + mot de passe**.
+- Administrateurs autorisés : définis par la variable `ADMIN_EMAILS` **et** créés
+  dans Supabase (Authentication → Users). Actuellement : Franck
+  (`hjcreation101@gmail.com`) et Max (`max.fianar@gmail.com`).
+- Toute modification (contact, produit, prix, photo, avis, événement) est
+  **visible immédiatement** sur le site public.
+- Si la base est injoignable, le site public retombe automatiquement sur le
+  contenu de secours de `src/data/` — il ne casse jamais.
 
 ## 🚀 Démarrer en local
 
-Pré-requis : [Node.js](https://nodejs.org) 18 ou plus.
+Pré-requis : [Node.js](https://nodejs.org) 20+.
 
 ```bash
-npm install      # installe les dépendances (une seule fois)
-npm run dev      # lance le site sur http://localhost:3000
+npm install            # une seule fois
+cp .env.example .env.local   # puis remplissez les 4 valeurs (voir ci-dessous)
+npm run dev            # http://localhost:3000
 ```
 
-Pour tester la version finale optimisée :
+> Sans `.env.local`, le site fonctionne quand même (contenu statique de
+> `src/data/`) mais l'administration est désactivée.
+
+## ☁️ Mise en place Supabase (une seule fois)
+
+1. **Créer le projet** : [supabase.com](https://supabase.com) → New project
+   (gratuit), nommé par ex. `hjfcreations`.
+2. **Créer les tables** : Supabase → *SQL Editor* → coller le contenu de
+   [`supabase/schema.sql`](supabase/schema.sql) → **Run**. (Ré-exécutable sans danger.)
+3. **Créer les 2 admins** : *Authentication → Users → Add user* —
+   `hjcreation101@gmail.com` et `max.fianar@gmail.com` avec leurs mots de passe
+   (cocher « Auto confirm »). Puis *Authentication → Sign In / Up* :
+   **désactiver** « Allow new users to sign up ».
+4. **Récupérer les clés** : *Project Settings → API Keys* → URL du projet,
+   clé `anon`, clé `service_role`.
+5. **Variables d'environnement** : remplir `.env.local` (local) **et**
+   Vercel → *Settings → Environment Variables* (production) :
+
+| Variable | Rôle |
+|----------|------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | clé publique (lecture + connexion) |
+| `SUPABASE_SERVICE_ROLE_KEY` | **secrète**, serveur uniquement (photos, seed) |
+| `ADMIN_EMAILS` | emails admin séparés par des virgules |
+
+6. **Remplir la base avec le contenu actuel** :
 
 ```bash
-npm run build && npm start
+npm run seed
 ```
 
----
+7. **Redéployer** sur Vercel (un simple `git push` suffit).
 
-## ✏️ Modifier le contenu (sans être développeur)
+### Garder la base éveillée
 
-Tout le contenu modifiable est dans **deux fichiers** seulement.
+Le plan gratuit Supabase met le projet en pause après ~7 jours sans requête.
+Le fichier [`vercel.json`](vercel.json) programme un **cron quotidien** qui
+appelle `/api/keepalive` — rien à faire, c'est automatique une fois déployé.
 
-### 1. Coordonnées — `src/data/site.ts`
-Email, téléphone, numéro WhatsApp, horaires, réseaux sociaux, moyens de paiement…
-Modifiez les valeurs, enregistrez : tout le site se met à jour automatiquement.
+## ✏️ Modifier le contenu
 
-### 2. Produits — `src/data/produits.ts`
-Pour **ajouter un produit**, copiez un bloc existant et changez les valeurs :
-
-```ts
-{
-  slug: "tasse-noel",                 // identifiant unique (dans l'adresse)
-  nom: "Tasse de Noël",
-  categorie: "ceramique",             // textile | ceramique | plastique | cadeau
-  prix: 25000,                         // en Ariary, ou null pour « Sur devis »
-  image: "/produits/tasse-noel.jpg",  // photo dans public/produits/ (ou "" si aucune)
-  description: "Une tasse festive personnalisée avec votre photo.",
-  details: ["Céramique premium", "Votre texte + photo", "Édition de fin d'année"],
-  populaire: true,                     // true = affiché en page d'accueil
-  badge: "Nouveau",                    // optionnel
-},
-```
-
-**Ajouter une photo :** déposez l'image dans le dossier `public/produits/`,
-puis indiquez son chemin dans `image` (ex. `"/produits/tasse-noel.jpg"`).
-Sans photo, une vignette élégante « Photo bientôt » s'affiche automatiquement.
-
----
-
-## ☁️ Mettre en ligne (GitHub → Vercel)
-
-### Étape 1 — Envoyer le code sur GitHub
-```bash
-git init
-git add .
-git commit -m "Site HJF Créations"
-git branch -M main
-git remote add origin https://github.com/<votre-compte>/hjfcreations.git
-git push -u origin main
-```
-
-### Étape 2 — Déployer sur Vercel (gratuit)
-1. Créez un compte sur [vercel.com](https://vercel.com) (connexion avec GitHub).
-2. **Add New… → Project**, puis importez le dépôt `hjfcreations`.
-3. Vercel détecte Next.js automatiquement — cliquez **Deploy**.
-4. En ~1 minute, votre site est en ligne sur une adresse `…vercel.app`.
-
-> À chaque `git push`, Vercel redéploie le site automatiquement.
-
-### Étape 3 — Nom de domaine (optionnel)
-Dans Vercel : **Project → Settings → Domains**, ajoutez votre domaine
-(ex. `hjfcreations.mg`) et suivez les instructions DNS.
-Pensez ensuite à mettre à jour le champ `url` dans `src/data/site.ts`.
-
----
+- **Au quotidien : passez par `/admin`** (aucune connaissance technique requise).
+- Le dossier `src/data/` contient le **contenu de secours** (et le seed initial) :
+  `site.ts` (coordonnées), `produits.ts` (catalogue), `temoignages.ts` (avis),
+  `evenements.ts` (événement par défaut). Il n'est utilisé que si la base est
+  vide ou injoignable.
 
 ## 📁 Structure du projet
 
 ```
 src/
-├── app/                  Pages (Next.js App Router)
-│   ├── page.tsx          Accueil
-│   ├── boutique/         Catalogue + fiches produits
-│   ├── a-propos/         À propos
-│   ├── contact/          Contact
-│   ├── layout.tsx        En-tête, pied de page, SEO (global)
-│   ├── sitemap.ts        Plan du site (SEO)
-│   └── robots.ts         robots.txt (SEO)
-├── components/           Éléments réutilisables (Header, Footer, ProductCard…)
-├── data/
-│   ├── site.ts           ⭐ Coordonnées & configuration
-│   └── produits.ts       ⭐ Catalogue produits
-└── lib/                  Fonctions utilitaires (liens WhatsApp, prix)
-public/
-├── logo.jpg              Logo HJF
-└── produits/             Photos des produits
-reference/                Fichiers d'origine (ancienne maquette HTML, visuels)
+├── app/
+│   ├── (site)/               Pages publiques (accueil, boutique, contact…)
+│   ├── admin/                Administration (login + pages protégées)
+│   │   ├── actions.ts        Server actions (validation zod + updateTag)
+│   │   └── (protected)/      Tableau de bord, contact, produits, avis, événements
+│   ├── api/keepalive/        Ping quotidien anti-pause Supabase
+│   ├── layout.tsx            Racine (polices, métadonnées)
+│   ├── sitemap.ts/robots.ts  SEO
+│   └── opengraph-image.tsx   Image de partage générée
+├── components/               Composants du site + components/admin/*
+├── data/                     ⭐ Contenu de secours + seed initial
+├── lib/
+│   ├── content.ts            Couche de données (cache + fallback)
+│   └── supabase/             Clients (public, serveur, service)
+├── proxy.ts                  Protection de /admin (session + allowlist)
+supabase/schema.sql           Schéma de la base (à exécuter dans Supabase)
+scripts/seed.ts               Remplissage initial (npm run seed)
 ```
 
----
+## ☁️ Déploiement
 
-## 🔮 Évolutions possibles
-
-- **Panier & paiement en ligne** (Mobile Money via une passerelle locale type Voaray).
-- **Interface d'administration / CMS** pour gérer les produits sans toucher au code.
-- **Galerie de réalisations** et avis clients.
-- **Suivi des statistiques** de visite (Vercel Analytics).
+À chaque `git push` sur `main`, Vercel reconstruit et déploie automatiquement
+(projet `hjfcreations` → https://hjfcreations.vercel.app). Pour un domaine
+personnalisé : Vercel → *Settings → Domains*, puis mettre à jour `url` dans
+`src/data/site.ts`.
 
 ---
 
-© HJF Créations — Antananarivo, Madagascar.
+© HJF Créations — Antananarivo, Madagascar. Crédits photos : voir [IMAGES.md](IMAGES.md).

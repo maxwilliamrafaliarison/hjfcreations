@@ -14,6 +14,7 @@ import { formatAr } from "../lib/format";
 export type Categorie = "textile" | "ceramique" | "plastique" | "cadeau";
 
 export interface Produit {
+  id?: string; // identifiant en base (absent pour le contenu statique)
   slug: string; // identifiant dans l'URL, ex : "mug-personnalise"
   nom: string;
   categorie: Categorie;
@@ -24,6 +25,7 @@ export interface Produit {
   populaire?: boolean;
   badge?: string; // ex : "Best-seller", "Nouveau", "Idée cadeau"
   tags?: string[]; // ex : ["scolaire"]
+  ordre?: number; // ordre d'affichage (petit = en premier)
 }
 
 export const CATEGORIES: { id: Categorie; label: string }[] = [

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/data/site";
+import type { SiteData } from "@/data/site";
 import Newsletter from "@/components/Newsletter";
 import {
   MailIcon,
@@ -30,7 +30,7 @@ function FooterCol({
   );
 }
 
-export default function Footer() {
+export default function Footer({ site }: { site: SiteData }) {
   const year = new Date().getFullYear();
   const socials = [
     { href: site.social.facebook, Icon: FacebookIcon, label: "Facebook" },
@@ -38,21 +38,31 @@ export default function Footer() {
     { href: site.social.tiktok, Icon: TikTokIcon, label: "TikTok" },
   ].filter((s) => s.href);
 
+  const [sloganDebut, sloganFin] = (() => {
+    const virgule = site.slogan.indexOf(",");
+    if (virgule === -1) return [site.slogan, ""];
+    return [site.slogan.slice(0, virgule + 1), site.slogan.slice(virgule + 1).trim()];
+  })();
+
   return (
     <footer className="bg-taupe text-cream">
       {/* Bandeau slogan */}
       <div className="border-b border-cream/10">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-6 py-12 sm:px-8 md:flex-row md:items-center">
           <p className="text-3xl font-extrabold uppercase leading-tight tracking-tight text-cream sm:text-4xl">
-            Créé avec passion,
-            <br />
-            <span className="script text-5xl normal-case text-gold sm:text-6xl">offert avec amour</span>
+            {sloganDebut}
+            {sloganFin && (
+              <>
+                <br />
+                <span className="script text-5xl normal-case text-gold sm:text-6xl">{sloganFin}</span>
+              </>
+            )}
           </p>
           <div className="flex items-center gap-4">
             <span className="eyebrow text-cream/70">Suivez-nous</span>
             <div className="flex gap-2.5">
               <a
-                href={contactWhatsappLink()}
+                href={contactWhatsappLink(site)}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -119,7 +129,7 @@ export default function Footer() {
             Recevez nos nouvelles créations et offres.
           </p>
           <div className="mt-4">
-            <Newsletter />
+            <Newsletter site={site} />
           </div>
         </div>
       </div>

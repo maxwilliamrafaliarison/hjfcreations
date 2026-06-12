@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { produits } from "@/data/produits";
+import { getProduits } from "@/lib/content";
 import PageHeader from "@/components/PageHeader";
 import BoutiqueGrid from "@/components/BoutiqueGrid";
 
@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/boutique" },
 };
 
-export default function BoutiquePage() {
+export default async function BoutiquePage() {
+  const produits = await getProduits();
+
   return (
     <>
       <PageHeader label="Nos créations" title={<>La <span className="script text-[1.15em] text-terracotta">boutique</span></>} watermark="Boutique">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { site } from "@/data/site";
+import type { SiteData } from "@/data/site";
 import { contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, MenuIcon, CloseIcon } from "@/components/icons";
 
@@ -19,9 +19,10 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
-export default function Header() {
+export default function Header({ site }: { site: SiteData }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const waLink = contactWhatsappLink(site);
 
   return (
     <header className="sticky top-0 z-50 border-b border-linen bg-cream/92 backdrop-blur-md">
@@ -59,7 +60,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           <a
-            href={contactWhatsappLink()}
+            href={waLink}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn--wa hidden !px-4 !py-2.5 sm:inline-flex"
@@ -99,7 +100,7 @@ export default function Header() {
             ))}
             <li className="mt-2">
               <a
-                href={contactWhatsappLink()}
+                href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn--wa w-full"

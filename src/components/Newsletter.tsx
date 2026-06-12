@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { site } from "@/data/site";
+import type { SiteData } from "@/data/site";
 
-export default function Newsletter() {
+export default function Newsletter({ site }: { site: SiteData }) {
   const [email, setEmail] = useState("");
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent("Inscription aux nouveautés HJF Créations");
+    const subject = encodeURIComponent(`Inscription aux nouveautés ${site.name}`);
     const body = encodeURIComponent(
       `Bonjour ${site.name},\nJe souhaite recevoir vos nouveautés et offres.\nMon email : ${email}`,
     );

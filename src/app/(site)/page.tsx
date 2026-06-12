@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { site } from "@/data/site";
-import { produits, getByTag } from "@/data/produits";
+import { getSite, getProduits, getTemoignages, getEvenementActif } from "@/lib/content";
 import ProductCard from "@/components/ProductCard";
 import Marquee from "@/components/Marquee";
 import MemphisPattern from "@/components/MemphisPattern";
 import Testimonials from "@/components/Testimonials";
+import EventFeature from "@/components/EventFeature";
 import { devisWhatsappLink, contactWhatsappLink } from "@/lib/whatsapp";
 import { WhatsAppIcon, ArrowRightIcon, MailIcon, SparkleIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
-
-const populaires = produits.filter((p) => p.populaire).slice(0, 4);
-const scolaires = getByTag("scolaire").slice(0, 4);
 
 const collections = [
   { id: "textile", label: "Textile", image: "/produits/coll-textile.jpg" },
@@ -37,7 +34,17 @@ const etapes = [
   { num: "3", titre: "Recevez", texte: "Payez par Mobile Money ou à la livraison, puis on vous livre." },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [site, produits, temoignages, evenement] = await Promise.all([
+    getSite(),
+    getProduits(),
+    getTemoignages(),
+    getEvenementActif(),
+  ]);
+
+  const populaires = produits.filter((p) => p.populaire).slice(0, 4);
+  const scolaires = produits.filter((p) => p.tags?.includes("scolaire")).slice(0, 4);
+
   return (
     <>
       {/* ═══════════ HERO ═══════════ */}
@@ -66,7 +73,7 @@ export default function Home() {
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
               <a
-                href={contactWhatsappLink()}
+                href={contactWhatsappLink(site)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn--line text-ink"
@@ -103,7 +110,7 @@ export default function Home() {
           "Créé avec passion",
           "Offert avec amour",
           "Texte + photo personnalisés",
-          "Livraison à Tana & en province",
+          `Livraison à Tana & en province`,
           "Paiement Mobile Money",
         ]}
       />
@@ -151,66 +158,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══════════ FEATURE : FÊTE DES MÈRES ═══════════ */}
-      <section className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 sm:px-8 md:grid-cols-2 md:py-20">
-        <div className="relative mx-auto w-full max-w-md overflow-hidden ring-1 ring-linen">
-          <Image
-            src="/campagne-fete-des-meres.jpg"
-            alt="Collection Fête des Mères — HJF Créations"
-            width={512}
-            height={768}
-            className="h-auto w-full object-cover"
-          />
-        </div>
-        <div>
-          <p className="eyebrow text-gold-dark">Idées cadeaux</p>
-          <h2 className="mt-3 text-3xl font-extrabold uppercase leading-tight tracking-tight text-ink sm:text-5xl">
-            Un cadeau qui vient
-            <span className="script block text-5xl normal-case text-terracotta sm:text-6xl">
-              du cœur
-            </span>
-          </h2>
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-taupe">
-            Mugs, t-shirts et objets personnalisés avec votre texte et vos plus
-            belles photos. La touche personnelle qui fait toute la différence —
-            pour la fête des mères, un anniversaire ou simplement faire plaisir.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/boutique" className="btn btn--terracotta">
-              Découvrir
-              <ArrowRightIcon className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ═══════════ ÉVÉNEMENT / PROMO (géré depuis l'admin) ═══════════ */}
+      {evenement && <EventFeature evenement={evenement} />}
 
       {/* ═══════════ SPÉCIAL COLLÈGE & LYCÉE ═══════════ */}
-      <section className="bg-cream">
-        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow text-gold-dark">Spécial rentrée</p>
-              <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-5xl">
-                Collège &amp; Lycée
-              </h2>
-              <p className="mt-3 max-w-xl text-taupe">
-                À deux pas du Lycée Français de Tananarive : gourdes, trousses,
-                carnets et casquettes au prénom de votre enfant — plus rien ne se
-                perd, et tout a du style.
-              </p>
+      {scolaires.length > 0 && (
+        <section className="bg-cream">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="eyebrow text-gold-dark">Spécial rentrée</p>
+                <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-5xl">
+                  Collège &amp; Lycée
+                </h2>
+                <p className="mt-3 max-w-xl text-taupe">
+                  À deux pas du Lycée Français de Tananarive : gourdes, trousses,
+                  carnets et casquettes au prénom de votre enfant — plus rien ne se
+                  perd, et tout a du style.
+                </p>
+              </div>
+              <Link href="/boutique" className="btn btn--line text-ink">
+                Voir tout
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
             </div>
-            <Link href="/boutique" className="btn btn--line text-ink">
-              Voir tout
-              <ArrowRightIcon className="h-4 w-4" />
-            </Link>
+            <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
+              {scolaires.map((p) => (
+                <ProductCard key={p.slug} produit={p} />
+              ))}
+            </div>
           </div>
-          <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
-            {scolaires.map((p) => (
-              <ProductCard key={p.slug} produit={p} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ═══════════ SAVOIR-FAIRE ═══════════ */}
       <section className="bg-ink text-cream">
@@ -262,19 +241,21 @@ export default function Home() {
       </section>
 
       {/* ═══════════ TÉMOIGNAGES ═══════════ */}
-      <section className="bg-sand">
-        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
-          <div className="text-center">
-            <p className="eyebrow text-gold-dark">Ils nous font confiance</p>
-            <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-5xl">
-              Vos plus beaux moments
-            </h2>
+      {temoignages.length > 0 && (
+        <section className="bg-sand">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 md:py-20">
+            <div className="text-center">
+              <p className="eyebrow text-gold-dark">Ils nous font confiance</p>
+              <h2 className="mt-2 text-3xl font-extrabold uppercase tracking-tight text-ink sm:text-5xl">
+                Vos plus beaux moments
+              </h2>
+            </div>
+            <div className="mt-12">
+              <Testimonials items={temoignages} />
+            </div>
           </div>
-          <div className="mt-12">
-            <Testimonials />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ═══════════ BANDEAU LIVRAISON ═══════════ */}
       <section className="bg-taupe text-cream">
@@ -283,7 +264,7 @@ export default function Home() {
             Livraison à {site.city} & en province
           </p>
           <p className="mt-1 text-cream/70">
-            Paiement Mobile Money (MVola, Orange, Airtel) ou à la livraison.
+            Paiement Mobile Money ({site.payments.filter((p) => p !== "Paiement à la livraison").join(", ")}) ou à la livraison.
           </p>
         </div>
       </section>
@@ -304,7 +285,7 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
-              href={devisWhatsappLink()}
+              href={devisWhatsappLink(site)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn--wa"
